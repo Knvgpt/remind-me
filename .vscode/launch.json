@@ -1,0 +1,13 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "lldb",
+      "request": "launch",
+      "args": [],
+      "cwd": "/Users/kanavgupta/Downloads/remind me app",
+      "program": "/Users/kanavgupta/Downloads/remind me app/build/Debug/outDebug"
+    }
+  ]
+}
