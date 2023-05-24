@@ -1,4 +1,4 @@
-import { get_data, get_data_by_id } from "./sql.js";
+import { get_all, get_by_id } from "./sql.js";
 // const express = require("express");
 import express from "express";
 import mysql from "mysql2";
@@ -11,13 +11,23 @@ const port = 3000;
 // const { requiresAuth } = require("express-openid-connect");
 // const mysql = require("mysql2");
 const app = express();
-const connection = mysql.createConnection(
-  'mysql://eqf739pfps9gzm03h526:pscale_pw_CHzc7Gr8K1iQoobAZAhj2lT5trcse5lW20LMuO8sZqe@ap-south.connect.psdb.cloud/test?ssl={"rejectUnauthorized":true}'
-);
+
+const connection = mysql.createConnection(process.env["DATABASE_URL"]);
+
 app.get("/data/:id", (req, res) => {
   const idt = req.params.id;
   console.log(idt);
-  connection.query(get_data_by_id, [idt], (error, results) => {
+  connection.query(get_by_id, [idt], (error, results) => {
+    if (error) {
+      console.error(error);
+      return res.sendStatus(500);
+    }
+    res.json(results);
+  });
+});
+
+app.get("/data", (req, res) => {
+  connection.query(get_all, (error, results) => {
     if (error) {
       console.error(error);
       return res.sendStatus(500);
@@ -35,15 +45,15 @@ const config = {
   auth0Logout: true,
   secret: "a long, randomly-generated string stored in env",
   baseURL: "http://localhost:" + port,
-  clientID: "YdofSxD4zvXbYaqrBSQlogFIqqknIowQ",
-  issuerBaseURL: "https://dev-8fefl2rjoosr4lj1.us.auth0.com",
+  clientID: process.env["AUTH0_CLIENT_ID"],
+  issuerBaseURL: process.env["AUTH0_ISSUER_BASE_URL"],
 };
 
 // auth router attaches /login, /logout, and /callback routes to the baseURL
 app.use(auth(config));
 
 // req.isAuthenticated is provided from the auth router
-app.get("/sup", (req, res) => {
+app.get("/isauth", (req, res) => {
   res.send(req.oidc.isAuthenticated() ? "Logged in" : "Logged out");
 });
 

@@ -1,2 +1,13 @@
-export const get_data = `Select * from EMDRecords`;
-export const get_data_by_id = `Select * from EMDRecords where id = ?`;
+export const get_all = `Select * from EMDRecords`;
+export const get_by_id = `Select * from EMDRecords where id = ?`;
+export const get_by_user = `Select * from EMDRecords where user = ?`;
+export const get_by_user_and_id = `Select * from EMDRecords where user = ? and id = ?`;
+export const insert = `Insert into EMDRecords (user, id, data) values (?, ?, ?)`;
+export const update = `Update EMDRecords set data = ? where user = ? and id = ?`;
+export const remove = `Delete from EMDRecords where user = ? and id = ?`;
+export const remove_all = `Delete from EMDRecords where user = ?`;
+export const get_all_users = `Select distinct user from EMDRecords`;
+export const get_all_users_and_ids = `Select distinct user, id from EMDRecords`;
+export const get_all_users_and_ids_and_data = `Select distinct user, id, data from EMDRecords`;
+export const get_all_users_and_ids_and_data_and_timestamp = `Select distinct user, id, data, timestamp from EMDRecords`;
+export const get_all_users_and_ids_and_data_and_timestamp_and_ip = `Select distinct user, id, data, timestamp, ip from EMDRecords`;
