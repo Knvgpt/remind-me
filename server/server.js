@@ -1,4 +1,6 @@
 import { get_all, get_by_id } from "./sql.js";
+import os from "os";
+import cors from "cors";
 // const express = require("express");
 import express from "express";
 import mysql from "mysql2";
@@ -8,10 +10,11 @@ import pkg from "express-openid-connect";
 
 const { requiresAuth } = pkg;
 const port = 3000;
+
 // const { requiresAuth } = require("express-openid-connect");
 // const mysql = require("mysql2");
 const app = express();
-
+app.use(cors()); // using cores to allow cross origin requests (to allow the react app to access the server thats running on a different port)
 const connection = mysql.createConnection(process.env["DATABASE_URL"]);
 
 app.get("/data/:id", (req, res) => {
@@ -44,7 +47,7 @@ const config = {
   authRequired: false,
   auth0Logout: true,
   secret: "a long, randomly-generated string stored in env",
-  baseURL: "http://localhost:" + port,
+  baseURL: "http://10.0.0.149:3000",
   clientID: process.env["AUTH0_CLIENT_ID"],
   issuerBaseURL: process.env["AUTH0_ISSUER_BASE_URL"],
 };
@@ -54,13 +57,19 @@ app.use(auth(config));
 
 // req.isAuthenticated is provided from the auth router
 app.get("/isauth", (req, res) => {
-  res.send(req.oidc.isAuthenticated() ? "Logged in" : "Logged out");
+  console.log(req);
+  res.send(req.oidc.isAuthenticated() ? "Log out" : "Log in");
 });
 
 app.get("/profile", requiresAuth(), (req, res) => {
   res.send(JSON.stringify(req.oidc.user));
 });
 
-app.listen(port, () => {
+app.listen(port, "0.0.0.0", () => {
   console.log("Server listening on port " + port + "...");
+
+  const networkInterfaces = os.networkInterfaces();
+  const addresses = networkInterfaces["en0"][1]; // Adjust the network interface name if necessary
+
+  console.log(`Server listening on http://${addresses.address}:${port}/`);
 });
